@@ -6,6 +6,7 @@ from sqlmodel import Session
 from config import config
 from database import get_session
 from interfaces import TokenInterface, UserInterface
+from permissions.auth import is_authenticated
 from services import CookieService, JwtService
 
 from .models import LoginRequest, RegisterRequest
@@ -58,25 +59,25 @@ async def register_user(
     )
 
 
-@router.post("/verify")
-async def verify_token(request: Request) -> JSONResponse:
-    access = request.cookies.get(config.ACCESS_COOKIE_NAME)
-    try:
-        JwtService.verify_token(access)
-    except Exception as e:
-        return JSONResponse(
-            content={"error": str(e)}, status_code=status.HTTP_401_UNAUTHORIZED
-        )
-    return JSONResponse(content={"detail": "Token is valid"})
-
-
 @router.post("/logout")
 async def logout_user(
-    request: Request, session: Session = Depends(get_session)
+    request: Request,
+    session: Session = Depends(get_session),
+    _=Depends(is_authenticated),
 ) -> JSONResponse:
     json_response = JSONResponse(content={"detail": "Logged out"})
     CookieService.delete_cookie(json_response, config.ACCESS_COOKIE_NAME)
     CookieService.delete_cookie(json_response, config.REFRESH_COOKIE_NAME)
     refresh = request.cookies.get(config.REFRESH_COOKIE_NAME)
+    if refresh is None:
+        return json_response
     TokenInterface(session).blacklist_token(refresh)
     return json_response
+
+
+@router.post("/verify")
+async def verify_token(
+    request: Request,
+    _=Depends(is_authenticated),
+) -> JSONResponse:
+    return JSONResponse(content={"detail": "Token is valid"})

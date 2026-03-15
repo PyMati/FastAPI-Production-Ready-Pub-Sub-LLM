@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 import jwt
 
@@ -8,7 +8,7 @@ from config import config
 class JwtService:
     @classmethod
     def create_access_token(cls, user_id: int) -> str:
-        expiry = datetime.now() + timedelta(
+        expiry = datetime.now(timezone.utc) + timedelta(
             minutes=config.JWT_ACCESS_TOKEN_EXPIRE_MINUTES
         )
         payload = {"user_id": user_id, "type": "access", "exp": expiry}
@@ -19,7 +19,7 @@ class JwtService:
 
     @classmethod
     def create_refresh_token(cls, user_id: int) -> str:
-        expiry = datetime.now() + timedelta(
+        expiry = datetime.now(timezone.utc) + timedelta(
             minutes=config.JWT_REFRESH_TOKEN_EXPIRE_MINUTES
         )
         payload = {"user_id": user_id, "type": "refresh", "exp": expiry}

@@ -26,7 +26,7 @@ class CookieService:
             value=value,
             max_age=max_age,
             httponly=config.COOKIE_SECURE,
-            secure=config.COOKIE_SECURE,
+            secure=True,
             samesite="lax",
         )
 
