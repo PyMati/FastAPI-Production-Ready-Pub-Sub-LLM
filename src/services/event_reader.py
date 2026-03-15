@@ -24,7 +24,7 @@ class EventReader:
                 block=self.DEFAULT_BLOCK_TIME,
                 count=self.DEFAULT_COUNT,
             )
-            print(f"Read entries: {entries}")
+
             if not entries:
                 idle_rounds += 1
                 await asyncio.sleep(0)

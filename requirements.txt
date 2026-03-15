@@ -5,6 +5,7 @@ amqp==5.3.1
 annotated-doc==0.0.4
 annotated-types==0.7.0
 anyio==4.12.1
+asyncpg==0.31.0
 attrs==25.4.0
 bcrypt==5.0.0
 billiard==4.2.4
@@ -60,6 +61,7 @@ platformdirs==4.9.4
 pre_commit==4.5.1
 prompt_toolkit==3.0.52
 propcache==0.4.1
+psycopg2-binary==2.9.11
 pydantic==2.12.5
 pydantic-extra-types==2.11.0
 pydantic-settings==2.13.1
