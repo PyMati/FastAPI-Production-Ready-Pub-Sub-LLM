@@ -3,7 +3,7 @@ from typing import Generator
 from sqlmodel import Session, SQLModel, create_engine
 
 from config import config
-from models import Chat, Message, User  # noqa: F401
+from models import Chat, Message, RefreshToken, User  # noqa: F401
 
 engine = create_engine(config.DATABASE_URL, echo=True)
 SQLModel.metadata.create_all(engine)
