@@ -1,9 +1,11 @@
 from fastapi import APIRouter
 from fastapi.responses import JSONResponse
 
-router = APIRouter(prefix="/health")
+from .models import HealthCheckResponse
+
+router = APIRouter(prefix="/health", tags=["health"])
 
 
-@router.get("/check/")
+@router.get("/check", response_model=HealthCheckResponse)
 async def health_check():
-    return JSONResponse(content={"status": "ok"})
+    return JSONResponse(content=HealthCheckResponse().model_dump())
