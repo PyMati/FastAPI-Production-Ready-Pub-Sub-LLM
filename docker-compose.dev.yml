@@ -1,0 +1,31 @@
+services:
+  app:
+    build: .
+    container_name: sexgram-backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./src:/app
+    env_file: .env
+    depends_on:
+      - postgres
+      - redis
+    command: ["sh", "-c", "chmod +x dev.sh && ./dev.sh"]
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    environment:
+      POSTGRES_USER: your_username
+      POSTGRES_PASSWORD: your_password
+      POSTGRES_DB: your_database
+    volumes:
+      - ./container_data/postgres:/var/lib/postgresql
+  redis:
+    image: redis:latest
+    container_name: redis
+    volumes:
+      - ./container_data/redis:/data
+
+volumes:
+  postgres_data:
+  redis_data:

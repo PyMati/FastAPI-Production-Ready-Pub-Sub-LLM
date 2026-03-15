@@ -1,0 +1,5 @@
+.venv
+.env
+container_data
+__pycache__
+.ruff_cache
