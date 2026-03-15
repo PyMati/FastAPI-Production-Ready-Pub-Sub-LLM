@@ -2,12 +2,9 @@ from fastapi import FastAPI
 
 from api import routers
 
+# setup_logging()
+
 app = FastAPI()
-
-
-@app.get("/")
-async def root():
-    return {"message": "Hello World"}
 
 
 for routes in routers:

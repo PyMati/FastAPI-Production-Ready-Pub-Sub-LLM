@@ -1,1 +1,3 @@
-from .chat import answer_on_message
+from .chat import chat_with_user
+
+__all__ = ["chat_with_user"]

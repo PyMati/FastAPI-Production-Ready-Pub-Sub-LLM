@@ -4,7 +4,9 @@ from fastapi import APIRouter
 from fastapi.responses import JSONResponse, StreamingResponse
 
 from services import ChannelManager, EventReader
-from tasks import answer_on_message
+from tasks import chat_with_user
+
+from .models import ChatMessage
 
 router = APIRouter(prefix="/chat")
 
@@ -16,9 +18,9 @@ async def read_response(channel_id: str):
 
 
 @router.post("/message")
-async def send_message():
+async def send_message(message: ChatMessage):
     new_channel_id = ChannelManager.create_new_channel("chat")
-    answer_on_message.delay(new_channel_id)
+    chat_with_user.delay(new_channel_id, message.content)
     return JSONResponse(
         content={"channel_id": new_channel_id}, status_code=HTTPStatus.CREATED
     )
