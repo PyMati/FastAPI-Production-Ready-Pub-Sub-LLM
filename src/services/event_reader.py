@@ -8,7 +8,7 @@ from utils import get_redis_client
 class EventReader:
     MAX_IDLE_ROUNDS = 12  # 12 * 5s block = 60s bez danych → koniec
     DEFAULT_BLOCK_TIME = 5000  # ms
-    DEFAULT_COUNT = 0
+    DEFAULT_COUNT = 10
 
     def __init__(self, channel_id: str, last_id: str = "0"):
         self.channel_id = channel_id
