@@ -10,7 +10,14 @@ services:
     depends_on:
       - postgres
       - redis
+      - qdrant
     command: ["sh", "-c", "chmod +x dev.sh && ./dev.sh"]
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: qdrant
+    env_file: .env
+    volumes:
+      - ./container_data/qdrant:/qdrant/storage
   postgres:
     image: postgres:latest
     container_name: postgres
@@ -20,6 +27,7 @@ services:
       POSTGRES_DB: your_database
     volumes:
       - ./container_data/postgres:/var/lib/postgresql
+      - ./init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
   redis:
     image: redis:latest
     container_name: redis

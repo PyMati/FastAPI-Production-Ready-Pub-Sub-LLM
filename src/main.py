@@ -1,6 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
+from langgraph.checkpoint.postgres import PostgresSaver
+from langgraph.store.postgres import PostgresStore
 
 import database  # noqa: F401 | This import is needed to initialize the database connection and make sure the models are registered.
 from api import routers
@@ -8,7 +10,16 @@ from config import config
 from middleware import CSRFMiddleware
 
 database.init_db()
+
+with (
+    PostgresSaver.from_conn_string(config.MEMORY_DATABASE_URL) as checkpointer,
+    PostgresStore.from_conn_string(config.MEMORY_DATABASE_URL) as store,
+):
+    checkpointer.setup()
+    store.setup()
+
 # setup_logging()
+
 
 app = FastAPI()
 

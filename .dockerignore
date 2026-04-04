@@ -3,3 +3,4 @@
 container_data
 __pycache__
 .ruff_cache
+init-db.sh

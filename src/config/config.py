@@ -43,6 +43,11 @@ class Config(BaseSettings):
         "postgresql://your_username:your_password@postgres:5432/your_database"
     )
 
+    # LLM memory settings
+    MEMORY_DATABASE_URL: str = (
+        "postgresql://your_username:your_password@postgres:5432/memory"
+    )
+
     # Redis
     REDIS_HOST: str = "redis"
     REDIS_PORT: int = 6379
