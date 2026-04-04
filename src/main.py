@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.gzip import GZipMiddleware
 
 import database  # noqa: F401 | This import is needed to initialize the database connection and make sure the models are registered.
 from api import routers
@@ -18,6 +19,7 @@ app.add_middleware(
     allow_headers=["*"],
     expose_headers=[config.CSRF_HEADER_NAME],
 )
+app.add_middleware(GZipMiddleware, minimum_size=1000)
 app.add_middleware(CSRFMiddleware)
 
 

@@ -1,7 +1,11 @@
+from typing import Literal
+
 from pydantic_settings import BaseSettings
 
 
 class Config(BaseSettings):
+    MODE: Literal["development", "production"] = "development"
+
     # JWT Token settings
     JWT_SECRET_KEY: str
     JWT_ALGORITHM: str = "HS256"
@@ -52,4 +56,6 @@ class Config(BaseSettings):
         env_file = ".env"
 
 
+config = Config()
+config = Config()
 config = Config()

@@ -7,7 +7,8 @@ from config import config
 from database import get_session
 from interfaces import TokenInterface, UserInterface
 from permissions.auth import is_authenticated
-from services import CookieService, CSRFService, JwtService
+from services import CookieService
+from utils import process_authentication_response
 
 from .models import LoginRequest, RegisterRequest
 
@@ -25,27 +26,7 @@ async def login_user(
             content={"error": "Invalid email or password"},
             status_code=status.HTTP_401_UNAUTHORIZED,
         )
-
-    tokens = JwtService.create_tokens(user.id)
-    csrf_token = CSRFService.generate_csrf_token()
-    json_response = JSONResponse(
-        content={
-            "id": user.id,
-            "email": user.email,
-            "gender": user.gender,
-        }
-    )
-    CookieService.set_auth_cookies(
-        json_response, tokens["access_token"], tokens["refresh_token"]
-    )
-    CookieService.set_cookie(
-        json_response,
-        config.CSRF_TOKEN_NAME,
-        csrf_token,
-        config.JWT_ACCESS_TOKEN_EXPIRE_MINUTES * 60,
-        False,
-    )
-    return json_response
+    return process_authentication_response(user)
 
 
 @router.post("/register")
@@ -62,9 +43,7 @@ async def register_user(
             content={"error": "Email already exists"},
             status_code=status.HTTP_400_BAD_REQUEST,
         )
-    return JSONResponse(
-        content={"id": user.id, "email": user.email, "gender": user.gender}
-    )
+    return process_authentication_response(user)
 
 
 @router.post("/logout")
@@ -76,6 +55,7 @@ async def logout_user(
     json_response = JSONResponse(content={"detail": "Logged out"})
     CookieService.delete_cookie(json_response, config.ACCESS_COOKIE_NAME)
     CookieService.delete_cookie(json_response, config.REFRESH_COOKIE_NAME)
+    CookieService.delete_cookie(json_response, config.CSRF_TOKEN_NAME)
     refresh = request.cookies.get(config.REFRESH_COOKIE_NAME)
     if refresh is None:
         return json_response
