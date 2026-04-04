@@ -7,7 +7,7 @@ from config import config
 from database import get_session
 from interfaces import TokenInterface, UserInterface
 from permissions.auth import is_authenticated
-from services import CookieService, JwtService
+from services import CookieService, CSRFService, JwtService
 
 from .models import LoginRequest, RegisterRequest
 
@@ -27,6 +27,7 @@ async def login_user(
         )
 
     tokens = JwtService.create_tokens(user.id)
+    csrf_token = CSRFService.generate_csrf_token()
     json_response = JSONResponse(
         content={
             "id": user.id,
@@ -36,6 +37,13 @@ async def login_user(
     )
     CookieService.set_auth_cookies(
         json_response, tokens["access_token"], tokens["refresh_token"]
+    )
+    CookieService.set_cookie(
+        json_response,
+        config.CSRF_TOKEN_NAME,
+        csrf_token,
+        config.JWT_ACCESS_TOKEN_EXPIRE_MINUTES * 60,
+        False,
     )
     return json_response
 

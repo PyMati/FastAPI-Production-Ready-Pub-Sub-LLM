@@ -20,12 +20,18 @@ class CookieService:
         )
 
     @staticmethod
-    def set_cookie(response: Response, key: str, value: str, max_age: int):
+    def set_cookie(
+        response: Response,
+        key: str,
+        value: str,
+        max_age: int,
+        httponly: bool = config.COOKIE_SECURE,
+    ):
         response.set_cookie(
             key=key,
             value=value,
             max_age=max_age,
-            httponly=config.COOKIE_SECURE,
+            httponly=httponly,
             secure=True,
             samesite="lax",
         )

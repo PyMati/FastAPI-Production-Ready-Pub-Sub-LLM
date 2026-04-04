@@ -6,7 +6,7 @@ class Config(BaseSettings):
     JWT_SECRET_KEY: str
     JWT_ALGORITHM: str = "HS256"
     JWT_ACCESS_TOKEN_EXPIRE_MINUTES: int = 60  # 1 hour
-    JWT_REFRESH_TOKEN_EXPIRE_MINUTES: int = 10_080  # 1 day
+    JWT_REFRESH_TOKEN_EXPIRE_MINUTES: int = 10_080  # 7 days
 
     # Cookie settings
     ACCESS_COOKIE_NAME: str = "access"
@@ -14,6 +14,14 @@ class Config(BaseSettings):
     COOKIE_DOMAIN: str = "localhost"
     COOKIE_SECURE: bool = False
     COOKIE_SAMESITE: str = "lax"
+
+    # CSRF Cookie settings
+    CSRF_TOKEN_NAME: str = "csrf_token"
+    CSRF_COOKIE_EXPIRE_MINUTES: int = JWT_REFRESH_TOKEN_EXPIRE_MINUTES
+    CSRF_HEADER_NAME: str = "X-CSRF-Token"
+
+    # CORS settings
+    CORS_ORIGINS: list[str] = ["http://localhost:3000"]
 
     # Celery
     CELERY_WORKER_NAME: str = "worker"
