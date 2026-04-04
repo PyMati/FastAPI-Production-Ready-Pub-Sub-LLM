@@ -1,16 +1,28 @@
 import uuid
 
-from sqlmodel import Field, Relationship, SQLModel
+from sqlalchemy import Boolean, ForeignKey, String
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+
+from database import Base
 
 
-class Chat(SQLModel, table=True):
-    id: str = Field(default_factory=uuid.uuid4, primary_key=True)
+class Chat(Base):
+    __tablename__ = "chat"
 
-    messages: list["Message"] = Relationship(back_populates="chat")
-    is_archived: bool = Field(default=False)
+    id: Mapped[str] = mapped_column(
+        String, primary_key=True, default=lambda: str(uuid.uuid4())
+    )
+    is_archived: Mapped[bool] = mapped_column(Boolean, default=False)
+
+    messages: Mapped[list["Message"]] = relationship(back_populates="chat")
 
 
-class Message(SQLModel, table=True):
-    id: str = Field(default_factory=uuid.uuid4, primary_key=True)
-    chat_id: str = Field(foreign_key="chat.id")
-    chat: Chat = Relationship(back_populates="messages")
+class Message(Base):
+    __tablename__ = "message"
+
+    id: Mapped[str] = mapped_column(
+        String, primary_key=True, default=lambda: str(uuid.uuid4())
+    )
+    chat_id: Mapped[str] = mapped_column(ForeignKey("chat.id"))
+
+    chat: Mapped["Chat"] = relationship(back_populates="messages")

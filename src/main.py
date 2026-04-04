@@ -7,6 +7,7 @@ from api import routers
 from config import config
 from middleware import CSRFMiddleware
 
+database.init_db()
 # setup_logging()
 
 app = FastAPI()

@@ -1,4 +1,4 @@
-from sqlmodel import select
+from sqlalchemy import select
 
 from models import User
 from services import PasswordService
@@ -17,7 +17,7 @@ class UserInterface(BaseInterface):
 
     def authenticate_user(self, email: str, password: str) -> User | None:
         statement = select(User).where(User.email == email)
-        user = self.session.exec(statement).first()
+        user = self.session.execute(statement).scalars().first()
         if user and PasswordService.verify_password(password, user.password):
             return user
         return None

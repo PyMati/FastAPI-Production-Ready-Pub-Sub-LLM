@@ -1,12 +1,22 @@
 from typing import Generator
 
-from sqlmodel import Session, SQLModel, create_engine
+from sqlalchemy import create_engine
+from sqlalchemy.orm import DeclarativeBase, Session
 
 from config import config
-from models import Chat, Message, RefreshToken, User  # noqa: F401
+
+
+class Base(DeclarativeBase):
+    pass
+
 
 engine = create_engine(config.DATABASE_URL, echo=True)
-SQLModel.metadata.create_all(engine)
+
+
+def init_db():
+    from models import Chat, Message, RefreshToken, User  # noqa: F401
+
+    Base.metadata.create_all(engine)
 
 
 def get_session() -> Generator[Session, None, None]:

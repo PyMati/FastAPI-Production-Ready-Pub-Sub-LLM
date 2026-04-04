@@ -1,9 +1,16 @@
 from datetime import datetime, timezone
 
-from sqlmodel import Field, SQLModel
+from sqlalchemy import DateTime, Integer, String
+from sqlalchemy.orm import Mapped, mapped_column
+
+from database import Base
 
 
-class RefreshToken(SQLModel, table=True):
-    id: int = Field(default=None, primary_key=True)
-    token: str = Field(unique=True, index=True)
-    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+class RefreshToken(Base):
+    __tablename__ = "refreshtoken"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    token: Mapped[str] = mapped_column(String, unique=True, index=True)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime, default=lambda: datetime.now(timezone.utc)
+    )

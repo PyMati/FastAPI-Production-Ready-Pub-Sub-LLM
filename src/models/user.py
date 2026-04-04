@@ -1,13 +1,24 @@
 from datetime import datetime, timezone
 
-from sqlmodel import Field, SQLModel
+from sqlalchemy import Boolean, DateTime, Integer, String
+from sqlalchemy.orm import Mapped, mapped_column
+
+from database import Base
 
 
-class User(SQLModel, table=True):
-    id: int = Field(default=None, primary_key=True, index=True)
-    email: str = Field(index=True, unique=True)
-    password: str
-    gender: str = Field(nullable=True)
-    is_active: bool = Field(default=True)
-    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
-    last_login: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+class User(Base):
+    __tablename__ = "user"
+
+    id: Mapped[int] = mapped_column(
+        Integer, primary_key=True, index=True, autoincrement=True
+    )
+    email: Mapped[str] = mapped_column(String, unique=True, index=True)
+    password: Mapped[str] = mapped_column(String)
+    gender: Mapped[str | None] = mapped_column(String, nullable=True)
+    is_active: Mapped[bool] = mapped_column(Boolean, default=True)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime, default=lambda: datetime.now(timezone.utc)
+    )
+    last_login: Mapped[datetime] = mapped_column(
+        DateTime, default=lambda: datetime.now(timezone.utc)
+    )

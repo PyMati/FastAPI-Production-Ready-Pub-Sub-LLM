@@ -2,7 +2,6 @@ import asyncio
 from typing import AsyncGenerator
 
 from enums import EventKeys
-from utils import get_redis_client
 
 
 class EventReader:
@@ -11,6 +10,8 @@ class EventReader:
     DEFAULT_COUNT = 10
 
     def __init__(self, channel_id: str, last_id: str = "0"):
+        from utils import get_redis_client
+
         self.channel_id = channel_id
         self.last_id = last_id
         self.redis = get_redis_client()
