@@ -7,6 +7,10 @@ from .base_interface import BaseInterface
 
 
 class UserInterface(BaseInterface):
+    def get_user_by_id(self, user_id: int) -> User | None:
+        statement = select(User).where(User.id == user_id)
+        return self.session.execute(statement).scalars().first()
+
     def create_user(self, email: str, password: str, gender: str) -> User:
         hashed_password = PasswordService.hash_password(password)
         user = User(email=email, password=hashed_password, gender=gender)

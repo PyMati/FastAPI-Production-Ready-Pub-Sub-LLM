@@ -7,8 +7,8 @@ from config import config
 from database import get_session
 from interfaces import TokenInterface, UserInterface
 from permissions.auth import is_authenticated
-from services import CookieService
-from utils import process_authentication_response
+from services import CookieService, JwtService
+from utils import process_authentication_response, process_refresh_response
 
 from .models import LoginRequest, RegisterRequest
 
@@ -69,3 +69,42 @@ async def verify_token(
     _=Depends(is_authenticated),
 ) -> JSONResponse:
     return JSONResponse(content={"detail": "Token is valid"})
+
+
+@router.post("/refresh")
+async def refresh_token(
+    request: Request,
+    session: Session = Depends(get_session),
+    _=Depends(is_authenticated),
+) -> JSONResponse:
+    refresh_token = request.cookies.get(config.REFRESH_COOKIE_NAME)
+    if not refresh_token:
+        return JSONResponse(
+            content={"error": "Refresh token missing"},
+            status_code=status.HTTP_400_BAD_REQUEST,
+        )
+
+    token_interface = TokenInterface(session)
+    if token_interface.is_token_blacklisted(refresh_token):
+        return JSONResponse(
+            content={"error": "Invalid refresh token"},
+            status_code=status.HTTP_401_UNAUTHORIZED,
+        )
+
+    try:
+        user_id = JwtService.verify_token(refresh_token)["user_id"]
+    except Exception as e:
+        return JSONResponse(
+            content={"error": str(e)},
+            status_code=status.HTTP_401_UNAUTHORIZED,
+        )
+
+    user_interface = UserInterface(session)
+    user = user_interface.get_user_by_id(user_id)
+    if not user:
+        return JSONResponse(
+            content={"error": "User not found"},
+            status_code=status.HTTP_404_NOT_FOUND,
+        )
+
+    return process_refresh_response(user_id)

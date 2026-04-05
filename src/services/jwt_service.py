@@ -50,6 +50,6 @@ class JwtService:
     @classmethod
     def verify_token(cls, token: str) -> dict:
         payload = cls.decode_token(token)
-        if payload.get("type") != "access":
+        if payload.get("type") not in ["access", "refresh"]:
             raise Exception("Invalid token type")
         return payload

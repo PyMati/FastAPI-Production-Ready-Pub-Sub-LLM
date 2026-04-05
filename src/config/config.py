@@ -62,5 +62,3 @@ class Config(BaseSettings):
 
 
 config = Config()
-config = Config()
-config = Config()
