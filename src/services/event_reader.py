@@ -17,7 +17,7 @@ class EventReader:
         self.redis = None
 
     @classmethod
-    async def create(cls, channel_id: str, last_id: str = "0") -> "EventReader":
+    def create(cls, channel_id: str, last_id: str = "0") -> "EventReader":
         from utils import get_redis_client
 
         instance = cls(channel_id, last_id)
@@ -27,7 +27,7 @@ class EventReader:
     async def read_events(self) -> AsyncGenerator[str, None]:
         idle_rounds = 0
         self.redis: AsyncRedis
-        print("TUITAJ")
+
         while idle_rounds < self.MAX_IDLE_ROUNDS:
             entries = await self.redis.xread(
                 {self.channel_id: self.last_id},
