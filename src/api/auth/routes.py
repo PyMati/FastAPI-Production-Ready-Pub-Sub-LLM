@@ -73,9 +73,7 @@ async def verify_token(
 
 @router.post("/refresh")
 async def refresh_token(
-    request: Request,
-    session: AsyncSession = Depends(get_session),
-    _=Depends(is_authenticated),
+    request: Request, session: AsyncSession = Depends(get_session)
 ) -> JSONResponse:
     refresh_token = request.cookies.get(config.REFRESH_COOKIE_NAME)
     if not refresh_token:

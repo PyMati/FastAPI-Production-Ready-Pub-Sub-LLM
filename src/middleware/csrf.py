@@ -9,7 +9,7 @@ from config import config
 
 logger = getLogger(__name__)
 
-EXCLUDED_ROUTES = ["/api/auth/login", "/api/auth/register", "/api/auth/verify"]
+EXCLUDED_ROUTES = ["/api/auth/login", "/api/auth/register"]
 CSRF_REQUIRED_METHODS = {"POST", "PUT", "DELETE", "PATCH"}
 
 
