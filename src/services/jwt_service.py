@@ -7,11 +7,24 @@ from config import config
 
 class JwtService:
     @classmethod
-    def create_access_token(cls, user_id: int) -> str:
+    def _get_payload(cls, user_id: int, token_type: str) -> dict:
         expiry = datetime.now(timezone.utc) + timedelta(
-            minutes=config.JWT_ACCESS_TOKEN_EXPIRE_MINUTES
+            minutes=(
+                config.JWT_ACCESS_TOKEN_EXPIRE_MINUTES
+                if token_type == "access"
+                else config.JWT_REFRESH_TOKEN_EXPIRE_MINUTES
+            )
         )
-        payload = {"user_id": user_id, "type": "access", "exp": expiry}
+        return {
+            "user_id": user_id,
+            "type": token_type,
+            "iss": config.JWT_ISSUER,
+            "exp": expiry,
+        }
+
+    @classmethod
+    def create_access_token(cls, user_id: int) -> str:
+        payload = cls._get_payload(user_id, "access")
         token = jwt.encode(
             payload, config.JWT_SECRET_KEY, algorithm=config.JWT_ALGORITHM
         )
@@ -19,10 +32,7 @@ class JwtService:
 
     @classmethod
     def create_refresh_token(cls, user_id: int) -> str:
-        expiry = datetime.now(timezone.utc) + timedelta(
-            minutes=config.JWT_REFRESH_TOKEN_EXPIRE_MINUTES
-        )
-        payload = {"user_id": user_id, "type": "refresh", "exp": expiry}
+        payload = cls._get_payload(user_id, "refresh")
         token = jwt.encode(
             payload, config.JWT_SECRET_KEY, algorithm=config.JWT_ALGORITHM
         )

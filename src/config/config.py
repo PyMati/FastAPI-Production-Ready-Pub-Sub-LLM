@@ -11,6 +11,7 @@ class Config(BaseSettings):
     JWT_ALGORITHM: str = "HS256"
     JWT_ACCESS_TOKEN_EXPIRE_MINUTES: int = 60  # 1 hour
     JWT_REFRESH_TOKEN_EXPIRE_MINUTES: int = 10_080  # 7 days
+    JWT_ISSUER: str = "your_app_name"
 
     # Cookie settings
     ACCESS_COOKIE_NAME: str = "access"
@@ -40,7 +41,7 @@ class Config(BaseSettings):
 
     # Database
     DATABASE_URL: str = (
-        "postgresql://your_username:your_password@postgres:5432/your_database"
+        "postgresql+asyncpg://your_username:your_password@postgres:5432/your_database"
     )
 
     # LLM memory settings

@@ -1,3 +1,5 @@
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
@@ -9,8 +11,6 @@ from api import routers
 from config import config
 from middleware import CSRFMiddleware
 
-database.init_db()
-
 with (
     PostgresSaver.from_conn_string(config.MEMORY_DATABASE_URL) as checkpointer,
     PostgresStore.from_conn_string(config.MEMORY_DATABASE_URL) as store,
@@ -21,7 +21,13 @@ with (
 # setup_logging()
 
 
-app = FastAPI()
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    await database.init_db()
+    yield
+
+
+app = FastAPI(lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,

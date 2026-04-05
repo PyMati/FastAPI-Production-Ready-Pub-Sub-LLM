@@ -1,7 +1,7 @@
-from typing import Generator
+from typing import AsyncGenerator
 
-from sqlalchemy import create_engine
-from sqlalchemy.orm import DeclarativeBase, Session
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
+from sqlalchemy.orm import DeclarativeBase
 
 from config import config
 
@@ -10,15 +10,18 @@ class Base(DeclarativeBase):
     pass
 
 
-engine = create_engine(config.DATABASE_URL, echo=True)
+engine = create_async_engine(config.DATABASE_URL, echo=True)
+
+AsyncSessionLocal = async_sessionmaker(bind=engine, expire_on_commit=False)
 
 
-def init_db():
-    from models import Chat, Message, RefreshToken, User  # noqa: F401
+async def init_db():
+    from models import BlacklistedToken, Chat, Message, User  # noqa: F401
 
-    Base.metadata.create_all(engine)
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
 
 
-def get_session() -> Generator[Session, None, None]:
-    with Session(engine) as session:
+async def get_session() -> AsyncGenerator[AsyncSession, None]:
+    async with AsyncSessionLocal() as session:
         yield session

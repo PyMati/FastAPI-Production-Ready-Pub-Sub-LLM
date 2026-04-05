@@ -31,12 +31,12 @@ def process_authentication_response(user: User) -> JSONResponse:
 
 
 def process_refresh_response(user_id: int) -> JSONResponse:
-    tokens = JwtService.create_tokens(user_id)["access_token"]
+    access_token = JwtService.create_tokens(user_id)["access_token"]
     json_response = JSONResponse(content={"detail": "Token refreshed"})
     CookieService.set_cookie(
         json_response,
         config.ACCESS_COOKIE_NAME,
-        tokens,
+        access_token,
         config.JWT_ACCESS_TOKEN_EXPIRE_MINUTES * 60,
     )
     return json_response
