@@ -1,0 +1,53 @@
+# cofnij ostatnią migrację
+alembic downgrade -1
+
+# cofnij do konkretnej rewizji
+alembic downgrade abc123
+
+# cofnij wszystko
+alembic downgrade base
+
+# Zobaczyć dostępne rewizje
+alembic history
+
+# Zobaczyć pełną historię (z hashami)
+alembic history --verbose
+
+# Zobaczyć aktualną rewizję
+alembic current
+
+# Stwórz nową migrację (autogeneracja z modeli)
+alembic revision --autogenerate -m "opis zmian"
+
+# Stwórz pustą migrację (ręczną)
+alembic revision -m "opis zmian"
+
+# Zastosuj wszystkie migracje
+alembic upgrade head
+
+# Zastosuj jedną migrację do przodu
+alembic upgrade +1
+
+# Zastosuj do konkretnej rewizji
+alembic upgrade abc123
+
+# Pokaż SQL bez wykonywania (dry run)
+alembic upgrade head --sql
+
+# Pokaż co się zmieni przy następnym upgrade
+alembic check
+
+# Pokaż heads (najnowsze rewizje)
+alembic heads
+
+# Pokaż branches
+alembic branches
+
+# Merge dwóch branchy
+alembic merge -m "merge branches" rev1 rev2
+
+# Oznacz bazę jako aktualną (bez wykonywania migracji)
+alembic stamp head
+
+# Oznacz konkretną rewizję
+alembic stamp abc123
