@@ -1,5 +1,6 @@
-from uuid import uuid4
 from typing import Literal
+from uuid import uuid4
+
 from enums import ChannelKeys
 
 CHANNEL_TYPES = Literal["chat"]
@@ -7,7 +8,7 @@ CHANNEL_TYPES = Literal["chat"]
 
 class ChannelManager:
     @staticmethod
-    def create_new_channel(channel_type: CHANNEL_TYPES) -> str:
+    def create_new_channel_id(channel_type: CHANNEL_TYPES) -> str:
         match channel_type:
             case "chat":
-                return str(f"{ChannelKeys.MESSAGE.value}_{uuid4()}")
+                return str(f"{ChannelKeys.CHAT.value}_{uuid4()}")

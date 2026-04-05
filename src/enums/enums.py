@@ -6,7 +6,7 @@ class RequestStateKeys(str, Enum):
 
 
 class ChannelKeys(str, Enum):
-    MESSAGE = "message"
+    CHAT = "chat"
 
 
 class EventKeys(str, Enum):

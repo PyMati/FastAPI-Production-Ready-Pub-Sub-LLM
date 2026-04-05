@@ -10,7 +10,9 @@ class Base(DeclarativeBase):
     pass
 
 
-engine = create_async_engine(config.DATABASE_URL, echo=True)
+engine = create_async_engine(
+    config.DATABASE_URL, echo=True if config.MODE == "development" else False
+)
 
 AsyncSessionLocal = async_sessionmaker(bind=engine, expire_on_commit=False)
 
